@@ -1,0 +1,20 @@
+schema: '2.0'
+stages:
+  prepare:
+    cmd: python3 src/data_loader.py
+    deps:
+    - path: data/raw
+      hash: md5
+      md5: d552a1a479304ae7c62c929fc8d9c3e1.dir
+      size: 42
+      nfiles: 1
+    - path: src/data_loader.py
+      hash: md5
+      md5: 6c6740eb2d5e0c1887e218b3a7549536
+      size: 5875
+    outs:
+    - path: data/processed
+      hash: md5
+      md5: 87c0f465c6993fe85d66aba184a86c5c.dir
+      size: 51
+      nfiles: 1
