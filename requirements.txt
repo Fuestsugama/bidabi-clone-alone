@@ -1,0 +1,16 @@
+# Outils MLOps et Versionnement
+dvc
+
+# Manipulation de données et Machine Learning
+pandas
+numpy
+scikit-learn
+
+# Outils probables pour le web scraping asynchrone (asyscrapper)
+aiohttp
+requests
+beautifulsoup4
+
+#python version 
+
+Python 3.12
