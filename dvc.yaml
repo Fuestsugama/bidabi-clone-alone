@@ -1,0 +1,15 @@
+stages:
+  prepare:
+    cmd: python3 src/data_loader.py
+    deps:
+    - data/raw
+    - src/data_loader.py
+    outs:
+    - data/processed
+  train:
+    cmd: python3 src/classificator.py
+    deps:
+    - data/processed
+    - src/classificator.py
+    outs:
+    - models/model.pkl
