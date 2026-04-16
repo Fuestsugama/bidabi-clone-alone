@@ -1,46 +1,54 @@
-# bidabi-clone-adapt-create
-# BIDABI : Clone → Adapt → Create
+## Documentation du Projet : Pipeline MLOps de Classification
 
-Dépôt pédagogique du cours **Big Data and Business Intelligence (BIDABI)**.  
-Ce projet a pour objectif d’initier les étudiants au travail avec du code open‑source, à l’adaptation de projets existants et à la création de leur propre jeu de données d’images.
+Ce projet implémente une chaîne complète de traitement de données (Atelier 3) et d'entraînement de modèle de Deep Learning (Atelier 4). L'objectif est de garantir la stabilité et la reproductibilité du pipeline, même en cas de défaillance des services tiers.
 
-## 🎯 Objectif du dépôt
-Ce dépôt sert de **plateforme d’apprentissage** où les étudiants réalisent un cycle complet de travail en data et en machine learning :
+### 1. Collecte de données et mécanismes de résilience
 
-- cloner un projet open‑source depuis GitHub
-- analyser sa structure, ses dépendances et son fonctionnement
-- adapter le code à un nouveau contexte
-- créer un jeu de données d’images personnalisé
-- intégrer ce jeu de données dans un pipeline ML existant
+Le script src/asyscrapper.py est conçu pour alimenter le pipeline de manière robuste.
 
-L’objectif est de reproduire des situations réelles rencontrées par les ingénieurs data et ML lorsqu’ils doivent réutiliser et modifier du code provenant d’autres développeurs.
+Mécanisme de repli (Fallback) : En raison de l'instabilité de l'API OpenFoodFacts (erreurs 503 récurrentes ou blocages SSL sur certains systèmes), le script intègre une sécurité. Si la collecte échoue, il bascule automatiquement sur une génération d'images factices (dummy images) basées sur une liste de codes-barres prédéfinis. Cela permet de tester l'intégralité du pipeline d'entraînement sans être bloqué par des facteurs externes.
 
-## 🎓 Public visé
-Ce projet est destiné aux étudiants du cours **BIDABI**, notamment ceux qui s’intéressent à :
+Adaptabilité : Pour modifier la source de données ou pointer vers un nouvel endpoint, il suffit de mettre à jour les variables suivantes dans src/asyscrapper.py :
 
-- l’apprentissage automatique
-- l’ingénierie des données
-- la reproductibilité des expériences
-- l’utilisation de GitHub et des projets open‑source
+ - API_URL_TEMPLATE : Pour changer l'adresse de l'API.
 
-## 🧩 Contenu du dépôt
-Le dépôt inclura :
+ - PRODUCTS_TO_FETCH : Pour modifier les catégories (ex: milk, bread) ou ajouter de nouveaux codes-barres.
 
-- des exemples de code à analyser et adapter
-- un modèle de structure pour le jeu de données
-- des consignes pour les travaux pratiques
-- des instructions pour exécuter et modifier le projet
+### 2. Entraînement et Modélisation
 
-## 🛠️ Compétences développées
-Les étudiants apprendront à :
+Deux scripts sont disponibles pour l'Atelier 4, répondant à des besoins différents :
 
-- lire et comprendre du code écrit par d’autres
-- manipuler des dépôts GitHub
-- concevoir et organiser un jeu de données d’images
-- intégrer des données dans un pipeline ML
-- documenter leur travail de manière claire et reproductible
+A. Entraînement léger (src/train.py)
 
-## 📄 Licence et usage
-Ce dépôt est destiné **exclusivement à des fins pédagogiques** dans le cadre du cours BIDABI.  
-Le code et les ressources peuvent être simplifiés ou modifiés pour faciliter l’apprentissage.
+C'est la solution la moins gourmande en ressources.
+  -Usage : Idéal pour une mise en production rapide ou pour tester la connectivité du pipeline.
+
+  -Fonctionnement : Il effectue un entraînement direct sur 3 époques sans calcul de métriques complexes, ce qui réduit la consommation de CPU/RAM. Il sauvegarde le modèle final dans models/resnet18_v3.pth.
+
+B. Analyse complète (src/classificator.py)
+
+C'est l'outil de validation scientifique.
+ -Usage : Analyse détaillée des performances du modèle.
+
+ -Fonctionnement : Il gère le partitionnement des données (Train, Validation, Test), utilise l'Early Stopping pour éviter le sur-apprentissage et génère un rapport de classification complet (Précision, Recall, F1-Score).
+
+### 3. Guide d'exécution rapide
+
+Pour reproduire l'intégralité du projet sur une machine vierge :
+
+ 3.1 Installation des dépendances 
+
+pip install -r requirements.txt
+
+ 3.2 Génération du dataset
+
+python src/asyscrapper.py
+
+ 3.3 entraînement (light version) 
+
+ python src/train.py
+
+ 3.4 Evaluation complète
+
+ python src/classificator.py
 
